@@ -23,6 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -41,8 +42,8 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\Output\Win\Debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\Output\Objs\Listener\Debug64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -53,6 +54,7 @@
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.8li</TargetExt>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.8li</TargetExt>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TemplateAutomation_x86d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TemplateAutomation_x64d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -116,16 +118,16 @@
     <ClCompile>
       <AdditionalOptions>/MP /GS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Common;..\..\..\Common\Includes;..\..\..\..\PhotoshopAPI\Photoshop;..\..\..\..\PhotoshopAPI\PICA_SP;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ISOLATION_AWARE_ENABLED=1;WIN32=1;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_WINDOWS;MSWIndows=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <AssemblerListingLocation>.\..\..\..\Output\Objs\Listener\Debug64/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\Output\Objs\Listener\Debug64/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\Output\Objs\Listener\Debug64/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -134,20 +136,21 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>..\Common;..\..\..\Common\Headers\Photoshop;..\..\..\Common\Headers\Photoshop\AS;..\..\..\Common\Headers\Photoshop\PICA;..\..\..\Common\Headers\Photoshop\PS-Suites;..\..\..\Common\Headers\SDK;..\..\..\Common\Rez-files\Photoshop;..\..\..\Common\Rez-files\SDK;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\common\includes;..\..\external\common\resources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;..\..\external\ps-sdk\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\Output\Win\Debug64\Listener.8li</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\Common\Libraries\PIUBasic;.\Common;..\..\..\Common\Headers\Photoshop;..\..\..\Common\Headers\Photoshop\AS;..\..\..\Common\Headers\Photoshop\PICA;..\..\..\Common\Headers\Photoshop\PS-Suites;..\..\..\Common\Headers\SDK;..\..\..\Common\Rez-files\Photoshop;..\..\..\Common\Rez-files\SDK;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\..\..\..\Output\Objs\Listener\Debug64/Listener.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>.\..\..\..\Output\Objs\Listener\Debug64/Listener.lib</ImportLibrary>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -161,7 +164,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\common\resources;..\..\..\Output\Objs\Listener\Debug64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +187,12 @@
 del "$(IntDir)%(Filename).rr"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).pipl;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl /I..\..\external\ps-sdk\photoshop /I..\..\external\ps-sdk\pica_sp /I..\..\external\ps-sdk\resources /I..\..\external\common\resources /I..\..\external\common\includes /EP /DMSWindows=1 /Tc"%(FullPath)" &gt; "$(IntDir)%(Filename).rr"
+..\..\external\tools\cnvtpipl "$(IntDir)%(Filename).rr" "$(IntDir)%(Filename).pipl"
+del "$(IntDir)%(Filename).rr"
+</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling PiPL resource...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).pipl;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
