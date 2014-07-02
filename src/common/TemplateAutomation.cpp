@@ -73,8 +73,8 @@ static SPErr Execute(PIActionParameters *actionParams) {
 	
 	Initialize(); 
 	
-	PIDialogPlayOptions playInfo = actionParams->playInfo;	
+	PIDialogPlayOptions playInfo = actionParams->playInfo;
 	if(playInfo == plugInDialogDisplay) error = DoUI();
 	
 	return error;
-}	
+}
