@@ -29,21 +29,38 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 			int item = LOWORD(wParam);
 			int cmd = HIWORD(wParam);
 			
-			switch(item)
-			{
-				case kDOk_button: {
-					if(cmd == BN_CLICKED) {
+			if(cmd == BN_CLICKED) {
+				switch(item) {
+					case kDOk_button:
+					case kDCancel_button: {
 						EndDialog(hDlg, item);
 						return TRUE;
-					}
-				} break;
-				
-				case kDCancel_button: {
-					if(cmd == BN_CLICKED) {
-						EndDialog(hDlg, item);
+					} break;
+					
+					case kDChoose_button: {
+						char file[1024] = "";
+						
+						OPENFILENAME dialog_settings;
+						ZeroMemory(&dialog_settings, sizeof(dialog_settings));
+						
+						dialog_settings.lStructSize = sizeof(dialog_settings);
+						dialog_settings.hwndOwner = hDlg;
+						dialog_settings.lpstrFilter = "All files (*.*)\0*.*\0csv files (*.csv)\0*.csv\0";
+						dialog_settings.lpstrCustomFilter = NULL;
+						dialog_settings.nFilterIndex = 2;
+						dialog_settings.lpstrTitle = "Select template data";
+						dialog_settings.Flags = OFN_FILEMUSTEXIST;
+						dialog_settings.lpstrFile = file;
+						dialog_settings.lpstrFile[0] = '\x0';
+						dialog_settings.nMaxFile = sizeof(file);
+						
+						if(GetOpenFileName(&dialog_settings) == TRUE) {
+							csv_text.SetText(dialog_settings.lpstrFile);
+						}
+						
 						return TRUE;
-					}
-				} break;
+					} break;
+				}
 			}
 			
 			return TRUE;
