@@ -11,7 +11,7 @@ SPErr DoUI() {
 		reinterpret_cast<DLGPROC>(TemplateAutomationProc),
 		NULL
 	);
-
+	
 	if(item != kDOk_button) return 'STOP';
 	
 	return noErr;
@@ -28,10 +28,16 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 		case WM_COMMAND: {
 			int item = LOWORD(wParam);
 			int cmd = HIWORD(wParam);
-
+			
 			switch(item)
 			{
-				case kDOk_button:
+				case kDOk_button: {
+					if(cmd == BN_CLICKED) {
+						EndDialog(hDlg, item);
+						return TRUE;
+					}
+				} break;
+				
 				case kDCancel_button: {
 					if(cmd == BN_CLICKED) {
 						EndDialog(hDlg, item);
@@ -47,6 +53,6 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 			return FALSE;
 		} break;
 	}
-
+	
 	return TRUE;
 }
