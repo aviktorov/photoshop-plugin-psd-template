@@ -12,6 +12,12 @@ SPPluginRef	gPlugInRef = NULL;
 
 /*
  */
+void MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
+	// TODO: make a template
+}
+
+/*
+ */
 static void Initialize();
 
 static SPErr Startup();

@@ -36,18 +36,41 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						std::string csv_path;
 						csv_text.GetText(csv_path);
 						
-						if(!csv_path.empty()) {
-							csv_parser file_parser;
-							
-							file_parser.set_skip_lines(1);
-							if(file_parser.init(csv_path.c_str())) {
-								file_parser.set_enclosed_char('"',ENCLOSURE_OPTIONAL);
-								file_parser.set_field_term_char(',');
-								file_parser.set_line_term_char('\n');
-							}
-							// TODO: parse csv file here
+						if(csv_path.empty()) {
+							MessageBox(NULL,"CSV path is empty","Error",MB_OK);
+							return TRUE;
 						}
 						
+						std::string template_name;
+						template_text.GetText(template_name);
+						
+						if(template_name.empty()) {
+							MessageBox(NULL,"Template name is empty","Error",MB_OK);
+							return TRUE;
+						}
+						
+						csv_parser file_parser;
+						file_parser.set_skip_lines(0);
+						
+						if(!file_parser.init(csv_path.c_str())) {
+							MessageBox(NULL,"Can't open CSV file","Error",MB_OK);
+							return TRUE;
+						}
+						
+						file_parser.set_enclosed_char('"',ENCLOSURE_OPTIONAL);
+						file_parser.set_field_term_char(',');
+						file_parser.set_line_term_char('\n');
+						
+						if(file_parser.get_record_count() == 0) {
+							MessageBox(NULL,"CSV file is empty","Error",MB_OK);
+							return TRUE;
+						}
+						
+						const csv_row & header = file_parser.get_row();
+						
+						while(file_parser.has_more_rows()) {
+							MakePSDTemplate(template_name.c_str(),header,file_parser.get_row());
+						}
 					}
 					case kDCancel_button: {
 						EndDialog(hDlg, item);
