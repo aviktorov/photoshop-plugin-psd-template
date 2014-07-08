@@ -1,5 +1,6 @@
 #include "TemplateAutomation.h"
 #include "TemplateAutomationUI.h"
+#include "csv_parser.hpp"
 
 DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,LPARAM lParam);
 
@@ -31,7 +32,23 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 			
 			if(cmd == BN_CLICKED) {
 				switch(item) {
-					case kDOk_button:
+					case kDOk_button: {
+						std::string csv_path;
+						csv_text.GetText(csv_path);
+						
+						if(!csv_path.empty()) {
+							csv_parser file_parser;
+							
+							file_parser.set_skip_lines(1);
+							if(file_parser.init(csv_path.c_str())) {
+								file_parser.set_enclosed_char('"',ENCLOSURE_OPTIONAL);
+								file_parser.set_field_term_char(',');
+								file_parser.set_line_term_char('\n');
+							}
+							// TODO: parse csv file here
+						}
+						
+					}
 					case kDCancel_button: {
 						EndDialog(hDlg, item);
 						return TRUE;

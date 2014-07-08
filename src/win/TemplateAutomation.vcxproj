@@ -110,7 +110,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /GS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\common;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\csv-parser;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ISOLATION_AWARE_ENABLED=1;WIN32=1;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_WINDOWS;MSWIndows=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -159,7 +159,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /GS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\common;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\csv-parser;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ISOLATION_AWARE_ENABLED=1;WIN32=1;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_WINDOWS;MSWIndows=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -210,7 +210,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /GS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\common;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\csv-parser;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ISOLATION_AWARE_ENABLED=1;WIN32=1;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_WINDOWS;MSWIndows=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -259,7 +259,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /GS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\common;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\..\external\csv-parser;..\..\external\common;..\..\external\common\includes;..\..\external\common\sources;..\..\external\ps-sdk\photoshop;..\..\external\ps-sdk\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ISOLATION_AWARE_ENABLED=1;WIN32=1;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_WINDOWS;MSWIndows=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -321,6 +321,7 @@
     <ClCompile Include="..\..\external\common\sources\PIUtilities.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIUtilitiesWin.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIWinUI.cpp" />
+    <ClCompile Include="..\..\external\csv-parser\csv_parser.cpp" />
     <ClCompile Include="..\common\TemplateAutomation.cpp" />
     <ClCompile Include="..\common\TemplateAutomationUI.cpp" />
     <ClCompile Include="TemplateAutomationWin.cpp" />
