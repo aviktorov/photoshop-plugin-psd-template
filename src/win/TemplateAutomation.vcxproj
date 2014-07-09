@@ -317,6 +317,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\external\common\sources\DialogUtilitiesWin.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIDLLInstance.cpp" />
+    <ClCompile Include="..\..\external\common\sources\PIUFile.cpp" />
+    <ClCompile Include="..\..\external\common\sources\PIUGet.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIUSuites.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIUtilities.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIUtilitiesWin.cpp" />

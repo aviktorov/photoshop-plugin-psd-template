@@ -60,7 +60,7 @@ void AliasToFullPath(Handle aliasValue, char* fullPath, int32 maxPathLength)
 		}
 }
 
-void FullPathToAlias(char* fullPath, Handle& aliasValue)
+void FullPathToAlias(const char* fullPath, Handle& aliasValue)
 {
 	aliasValue = NULL;
 #if __PIMac__

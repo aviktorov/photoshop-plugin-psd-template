@@ -39,7 +39,7 @@
 #endif
 
 void AliasToFullPath(Handle aliasValue, char* fullPath, int32 maxPathLength);
-void FullPathToAlias(char* fullPath, Handle& aliasValue);
+void FullPathToAlias(const char* fullPath, Handle& aliasValue);
 int32 GetFullPathToDesktop(char* fullPath, int32 maxPathLength);
 
 #endif

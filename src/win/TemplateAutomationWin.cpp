@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "TemplateAutomation.h"
 #include "TemplateAutomationUI.h"
 #include "csv_parser.hpp"
@@ -50,8 +52,6 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						}
 						
 						csv_parser file_parser;
-						file_parser.set_skip_lines(0);
-						
 						if(!file_parser.init(csv_path.c_str())) {
 							MessageBox(NULL,"Can't open CSV file","Error",MB_OK);
 							return TRUE;
@@ -61,15 +61,20 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						file_parser.set_field_term_char(',');
 						file_parser.set_line_term_char('\n');
 						
-						if(file_parser.get_record_count() == 0) {
+						if(!file_parser.has_more_rows()) {
 							MessageBox(NULL,"CSV file is empty","Error",MB_OK);
 							return TRUE;
 						}
 						
-						const csv_row & header = file_parser.get_row();
+						const csv_row& header = file_parser.get_row();
 						
 						while(file_parser.has_more_rows()) {
-							MakePSDTemplate(template_name.c_str(),header,file_parser.get_row());
+							std::ostringstream psd_stream;
+							psd_stream << template_name.c_str() << "_" << file_parser.get_record_count() << ".psd";
+							psd_stream.flush();
+							
+							std::string psd_name = psd_stream.str();
+							MakePSDTemplate(psd_name.c_str(),header,file_parser.get_row());
 						}
 					}
 					case kDCancel_button: {
