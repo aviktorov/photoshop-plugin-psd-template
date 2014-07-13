@@ -17,7 +17,7 @@ SPPluginRef	gPlugInRef = NULL;
 
 /*
  */
-SPErr SelectLayerByName(const char* name) {
+SPErr SelectLayerByName(const std::wstring& name) {
 	PIActionDescriptor result = NULL;
 	
 	PIActionDescriptor action = NULL;
@@ -28,7 +28,9 @@ SPErr SelectLayerByName(const char* name) {
 	error = sPSActionReference->Make(&layer_name);
 	if(error) goto returnError;
 	
-	error = sPSActionReference->PutName(layer_name,classLayer,name);
+	ASZString str;
+	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&str);
+	error = sPSActionReference->PutNameZString(layer_name,classLayer,str);
 	if(error) goto returnError;
 	
 	error = sPSActionDescriptor->PutReference(action,keyNull,layer_name);
@@ -46,7 +48,7 @@ SPErr SelectLayerByName(const char* name) {
 	return error;
 }
 
-SPErr SetCurrentLayerText(const char* text) {
+SPErr SetCurrentLayerText(const std::wstring& text) {
 	PIActionDescriptor result = NULL;
 	
 	PIActionDescriptor action = NULL;
@@ -67,7 +69,9 @@ SPErr SetCurrentLayerText(const char* text) {
 	error = sPSActionDescriptor->Make(&layer_text);
 	if(error) goto returnError;
 	
-	error = sPSActionDescriptor->PutString(layer_text,keyText,text);
+	ASZString str;
+	sASZString->MakeFromUnicode((ASUnicode*)&text[0],text.size(),&str);
+	error = sPSActionDescriptor->PutZString(layer_text,keyText,str);
 	if(error) goto returnError;
 	
 	error = sPSActionDescriptor->PutObject(action,keyTo,classTextLayer,layer_text);
@@ -125,22 +129,6 @@ SPErr SavePSD(const char* name) {
 	if(path != NULL) sPSHandle->Dispose(path);
 	
 	return error;
-}
-
-/*
- */
-int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
-	SPErr error = kNoErr;
-	
-	for(size_t i = 0; i < header.size(); ++i) {
-		error = SelectLayerByName(header[i].c_str());
-		if(error != kNoErr) continue;
-		
-		SetCurrentLayerText(data[i].c_str());
-	}
-	
-	error = SavePSD(name);
-	return (error == kNoErr);
 }
 
 /*

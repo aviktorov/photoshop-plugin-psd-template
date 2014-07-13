@@ -5,11 +5,11 @@
 #include "TemplateAutomationTerminology.h"
 
 #include <string>
-#include <vector>
 
 extern SPPluginRef gPlugInRef;
-typedef std::vector<std::string> csv_row;
 
-int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data);
+SPErr SelectLayerByName(const std::wstring& text);
+SPErr SetCurrentLayerText(const std::wstring& text);
+SPErr SavePSD(const char* name);
 
 #endif // __TEMPLATE_AUTIOMATION_H__

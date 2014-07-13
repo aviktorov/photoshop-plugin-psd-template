@@ -4,14 +4,15 @@
 #include <string>
 #include <vector>
 
+typedef std::vector<std::wstring> csv_row;
+
 class CSVData {
 	public:
 		
-		typedef std::vector<std::string> csv_row;
 		
 		int load(const std::string& name);
 		
-		inline void addItem(const char* item) { current_row.push_back(std::string(item)); }
+		inline void addItem(const std::wstring& item) { current_row.push_back(item); }
 		inline void addRow() { rows.push_back(current_row); current_row.clear(); }
 		
 		inline size_t getNumRows() const { return rows.size(); }

@@ -6,6 +6,20 @@
 
 DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,LPARAM lParam);
 
+int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
+	SPErr error = kNoErr;
+	
+	for(size_t i = 0; i < header.size(); ++i) {
+		error = SelectLayerByName(header[i]);
+		if(error != kNoErr) continue;
+		
+		SetCurrentLayerText(data[i]);
+	}
+	
+	error = SavePSD(name);
+	return (error == kNoErr);
+}
+
 SPErr DoUI() {
 	INT_PTR item = DialogBoxParam(
 		GetDLLInstance(gPlugInRef),
