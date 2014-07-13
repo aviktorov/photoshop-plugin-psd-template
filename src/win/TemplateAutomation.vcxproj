@@ -298,6 +298,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\CSVData.h" />
     <ClInclude Include="..\common\TemplateAutomation.h" />
     <ClInclude Include="..\common\TemplateAutomationTerminology.h" />
     <ClInclude Include="..\common\TemplateAutomationUI.h" />
@@ -323,7 +324,8 @@
     <ClCompile Include="..\..\external\common\sources\PIUtilities.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIUtilitiesWin.cpp" />
     <ClCompile Include="..\..\external\common\sources\PIWinUI.cpp" />
-    <ClCompile Include="..\..\external\csv-parser\csv_parser.cpp" />
+    <ClCompile Include="..\..\external\csv-parser\libcsv.c" />
+    <ClCompile Include="..\common\CSVData.cpp" />
     <ClCompile Include="..\common\TemplateAutomation.cpp" />
     <ClCompile Include="..\common\TemplateAutomationUI.cpp" />
     <ClCompile Include="TemplateAutomationWin.cpp" />

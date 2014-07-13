@@ -17,6 +17,77 @@ SPPluginRef	gPlugInRef = NULL;
 
 /*
  */
+SPErr SelectLayerByName(const char* name) {
+	PIActionDescriptor result = NULL;
+	
+	PIActionDescriptor action = NULL;
+	SPErr error = sPSActionDescriptor->Make(&action);
+	if(error) goto returnError;
+	
+	PIActionReference layer_name = NULL;
+	error = sPSActionReference->Make(&layer_name);
+	if(error) goto returnError;
+	
+	error = sPSActionReference->PutName(layer_name,classLayer,name);
+	if(error) goto returnError;
+	
+	error = sPSActionDescriptor->PutReference(action,keyNull,layer_name);
+	if(error) goto returnError;
+	
+	error = sPSActionControl->Play(&result,eventSelect,action,plugInDialogSilent);
+	if(error) goto returnError;
+	
+	returnError:
+	
+	if(result != NULL) sPSActionDescriptor->Free(result);
+	if(action != NULL) sPSActionDescriptor->Free(action);
+	if(layer_name != NULL) sPSActionReference->Free(layer_name);
+	
+	return error;
+}
+
+SPErr SetCurrentLayerText(const char* text) {
+	PIActionDescriptor result = NULL;
+	
+	PIActionDescriptor action = NULL;
+	SPErr error = sPSActionDescriptor->Make(&action);
+	if(error) goto returnError;
+	
+	PIActionReference layer = NULL;
+	error = sPSActionReference->Make(&layer);
+	if(error) goto returnError;
+	
+	error = sPSActionReference->PutEnumerated(layer,classTextLayer,typeOrdinal,enumTarget);
+	if(error) goto returnError;
+	
+	error = sPSActionDescriptor->PutReference(action,keyNull,layer);
+	if(error) goto returnError;
+	
+	PIActionDescriptor layer_text = NULL;
+	error = sPSActionDescriptor->Make(&layer_text);
+	if(error) goto returnError;
+	
+	error = sPSActionDescriptor->PutString(layer_text,keyText,text);
+	if(error) goto returnError;
+	
+	error = sPSActionDescriptor->PutObject(action,keyTo,classTextLayer,layer_text);
+	if(error) goto returnError;
+	
+	error = sPSActionControl->Play(&result,eventSet,action,plugInDialogSilent);
+	if(error) goto returnError;
+	
+	returnError:
+	
+	if(result != NULL) sPSActionDescriptor->Free(result);
+	if(action != NULL) sPSActionDescriptor->Free(action);
+	if(layer != NULL) sPSActionReference->Free(layer);
+	if(layer_text != NULL) sPSActionDescriptor->Free(layer_text);
+	
+	return error;
+}
+
+/*
+ */
 SPErr SavePSD(const char* name) {
 	PIActionDescriptor action = NULL;
 	SPErr error = sPSActionDescriptor->Make(&action);
@@ -29,7 +100,7 @@ SPErr SavePSD(const char* name) {
 	DescriptorTypeID compatibility_key;
 	error = sPSActionControl->StringIDToTypeID("maximizeCompatibility",&compatibility_key);
 	if(error) goto returnError;
-
+	
 	error = sPSActionDescriptor->PutBoolean(compatibility,compatibility_key,true);
 	if(error) goto returnError;
 	
@@ -58,9 +129,18 @@ SPErr SavePSD(const char* name) {
 
 /*
  */
-void MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
-	// TODO: change text layers
-	SavePSD(name);
+int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
+	SPErr error = kNoErr;
+	
+	for(size_t i = 0; i < header.size(); ++i) {
+		error = SelectLayerByName(header[i].c_str());
+		if(error != kNoErr) continue;
+		
+		SetCurrentLayerText(data[i].c_str());
+	}
+	
+	error = SavePSD(name);
+	return (error == kNoErr);
 }
 
 /*

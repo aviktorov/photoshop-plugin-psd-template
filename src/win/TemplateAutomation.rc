@@ -47,7 +47,7 @@
 		DEFPUSHBUTTON	"&OK", 1, 253, 7, 41, 14
 		PUSHBUTTON		"&Cancel", 2, 253, 24, 41, 14
 		RTEXT			"CSV File:", 3, 7, 16, 60, 14
-		RTEXT			"Template Name:", 4, 7, 33, 60, 14
+		RTEXT			"Template Path:", 4, 7, 33, 60, 14
 		GROUPBOX		"Import", 5, 7, 4, 240, 45
 		EDITTEXT		6, 70, 14, 110, 13, ES_LEFT | ES_AUTOHSCROLL | WS_TABSTOP | WS_BORDER
 		PUSHBUTTON		"Choose...", 7, 183, 14, 51, 14

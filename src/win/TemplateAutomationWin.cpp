@@ -2,7 +2,7 @@
 
 #include "TemplateAutomation.h"
 #include "TemplateAutomationUI.h"
-#include "csv_parser.hpp"
+#include "CSVData.h"
 
 DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,LPARAM lParam);
 
@@ -39,7 +39,7 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						csv_text.GetText(csv_path);
 						
 						if(csv_path.empty()) {
-							MessageBox(NULL,"CSV path is empty","Error",MB_OK);
+							MessageBox(hDlg,"CSV path is empty","Error",MB_OK);
 							return TRUE;
 						}
 						
@@ -47,36 +47,34 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						template_text.GetText(template_name);
 						
 						if(template_name.empty()) {
-							MessageBox(NULL,"Template name is empty","Error",MB_OK);
+							MessageBox(hDlg,"Template name is empty","Error",MB_OK);
 							return TRUE;
 						}
 						
-						csv_parser file_parser;
-						if(!file_parser.init(csv_path.c_str())) {
-							MessageBox(NULL,"Can't open CSV file","Error",MB_OK);
+						CSVData csv_data;
+						if(csv_data.load(csv_path) == 0) {
+							MessageBox(hDlg,"Can't load CSV file","Error",MB_OK);
 							return TRUE;
 						}
 						
-						file_parser.set_enclosed_char('"',ENCLOSURE_OPTIONAL);
-						file_parser.set_field_term_char(',');
-						file_parser.set_line_term_char('\n');
-						
-						if(!file_parser.has_more_rows()) {
-							MessageBox(NULL,"CSV file is empty","Error",MB_OK);
+						if(csv_data.getNumRows() == 0) {
+							MessageBox(hDlg,"CSV file is empty","Error",MB_OK);
 							return TRUE;
 						}
 						
-						const csv_row& header = file_parser.get_row();
+						const csv_row& header = csv_data.getRow(0);
 						
-						while(file_parser.has_more_rows()) {
+						for(size_t i = 1; i < csv_data.getNumRows(); ++i) {
 							std::ostringstream psd_stream;
-							psd_stream << template_name.c_str() << "_" << file_parser.get_record_count() << ".psd";
-							psd_stream.flush();
+							psd_stream << template_name.c_str() << "_" << i << ".psd";
 							
 							std::string psd_name = psd_stream.str();
-							MakePSDTemplate(psd_name.c_str(),header,file_parser.get_row());
+							const csv_row& data = csv_data.getRow(i);
+							
+							MakePSDTemplate(psd_name.c_str(),header,data);
 						}
 					}
+					
 					case kDCancel_button: {
 						EndDialog(hDlg, item);
 						return TRUE;
