@@ -1,5 +1,6 @@
-#include <fstream>
 #include <windows.h>
+
+#include <fstream>
 
 #include "CSVData.h"
 #include "csv.h"
@@ -7,12 +8,19 @@
 void item_callback(void* s,size_t i,void* data) {
 	CSVData* csv_data = static_cast<CSVData*>(data);
 	
+	std::string content(static_cast<const char*>(s));
+	std::string search("\\n");
+	
+	for(size_t place = content.find(search); place != std::string::npos; place = content.find(search)) {
+		content.replace(place,search.length(),"\n\r");
+	}
+	
 	#ifdef _WIN32
-		int size_needed = MultiByteToWideChar(CP_UTF8,0,static_cast<char*>(s),static_cast<int>(i),NULL,0);
+		int size_needed = MultiByteToWideChar(CP_UTF8,0,content.c_str(),static_cast<int>(content.size()),NULL,0);
 		std::wstring wcontent = L"";
 		if(size_needed) {
 			wcontent = std::wstring(size_needed,0);
-			MultiByteToWideChar(CP_UTF8,0,static_cast<char*>(s),static_cast<int>(i),&wcontent[0],size_needed);
+			MultiByteToWideChar(CP_UTF8,0,content.c_str(),static_cast<int>(content.size()),&wcontent[0],size_needed);
 		}
 	#else
 		std::wstring wcontent = L"implement me";
