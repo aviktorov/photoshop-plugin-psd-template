@@ -1,15 +1,12 @@
 #ifndef __TEMPLATE_AUTIOMATION_H__
 #define __TEMPLATE_AUTIOMATION_H__
 
+#include "CSVData.h"
 #include "SPInterf.h"
 #include "TemplateAutomationTerminology.h"
 
-#include <string>
-
 extern SPPluginRef gPlugInRef;
 
-SPErr SelectLayerByName(const std::wstring& text);
-SPErr SetCurrentLayerText(const std::wstring& text);
-SPErr SavePSD(const char* name);
+int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data);
 
 #endif // __TEMPLATE_AUTIOMATION_H__

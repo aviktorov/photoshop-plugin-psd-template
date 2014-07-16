@@ -17,38 +17,53 @@ SPPluginRef	gPlugInRef = NULL;
 
 /*
  */
-SPErr SelectLayerByName(const std::wstring& name) {
-	PIActionDescriptor result = NULL;
-	
+static void Initialize();
+
+static SPErr Startup();
+static SPErr Shutdown();
+static SPErr Execute(PIActionParameters *actionParams);
+
+/*
+ */
+SPErr SetLayerHidden(const std::wstring& name,bool hidden) {
 	PIActionDescriptor action = NULL;
 	SPErr error = sPSActionDescriptor->Make(&action);
 	if(error) goto returnError;
 	
-	PIActionReference layer_name = NULL;
-	error = sPSActionReference->Make(&layer_name);
+	PIActionList layer_list = NULL;
+	error = sPSActionList->Make(&layer_list);
 	if(error) goto returnError;
 	
-	ASZString str;
-	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&str);
-	error = sPSActionReference->PutNameZString(layer_name,classLayer,str);
+	PIActionReference layer = NULL;
+	error = sPSActionReference->Make(&layer);
 	if(error) goto returnError;
 	
-	error = sPSActionDescriptor->PutReference(action,keyNull,layer_name);
+	ASZString temp_str;
+	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&temp_str);
+	error = sPSActionReference->PutNameZString(layer,classLayer,temp_str);
 	if(error) goto returnError;
 	
-	error = sPSActionControl->Play(&result,eventSelect,action,plugInDialogSilent);
+	error = sPSActionList->PutReference(layer_list,layer);
+	if(error) goto returnError;
+	
+	error = sPSActionDescriptor->PutList(action,keyNull,layer_list);
+	if(error) goto returnError;
+	
+	PIActionDescriptor result = NULL;
+	error = sPSActionControl->Play(&result,(hidden) ? eventHide : eventShow,action,plugInDialogSilent);
 	if(error) goto returnError;
 	
 	returnError:
 	
 	if(result != NULL) sPSActionDescriptor->Free(result);
 	if(action != NULL) sPSActionDescriptor->Free(action);
-	if(layer_name != NULL) sPSActionReference->Free(layer_name);
+	if(layer_list != NULL) sPSActionList->Free(layer_list);
+	if(layer != NULL) sPSActionReference->Free(layer);
 	
 	return error;
 }
 
-SPErr SetCurrentLayerText(const std::wstring& text) {
+SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	PIActionDescriptor result = NULL;
 	
 	PIActionDescriptor action = NULL;
@@ -59,7 +74,9 @@ SPErr SetCurrentLayerText(const std::wstring& text) {
 	error = sPSActionReference->Make(&layer);
 	if(error) goto returnError;
 	
-	error = sPSActionReference->PutEnumerated(layer,classTextLayer,typeOrdinal,enumTarget);
+	ASZString temp_str;
+	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&temp_str);
+	error = sPSActionReference->PutNameZString(layer,classTextLayer,temp_str);
 	if(error) goto returnError;
 	
 	error = sPSActionDescriptor->PutReference(action,keyNull,layer);
@@ -69,9 +86,8 @@ SPErr SetCurrentLayerText(const std::wstring& text) {
 	error = sPSActionDescriptor->Make(&layer_text);
 	if(error) goto returnError;
 	
-	ASZString str;
-	sASZString->MakeFromUnicode((ASUnicode*)&text[0],text.size(),&str);
-	error = sPSActionDescriptor->PutZString(layer_text,keyText,str);
+	sASZString->MakeFromUnicode((ASUnicode*)&text[0],text.size(),&temp_str);
+	error = sPSActionDescriptor->PutZString(layer_text,keyText,temp_str);
 	if(error) goto returnError;
 	
 	error = sPSActionDescriptor->PutObject(action,keyTo,classTextLayer,layer_text);
@@ -133,11 +149,23 @@ SPErr SavePSD(const char* name) {
 
 /*
  */
-static void Initialize();
-
-static SPErr Startup();
-static SPErr Shutdown();
-static SPErr Execute(PIActionParameters *actionParams);
+int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
+	for(size_t i = 0; i < data.size(); ++i) {
+		SetLayerHidden(data[i],false);
+	}
+	
+	for(size_t i = 0; i < header.size(); ++i) {
+		SetLayerText(header[i],data[i]);
+	}
+	
+	SPErr result = SavePSD(name);
+	
+	for(size_t i = 0; i < data.size(); ++i) {
+		SetLayerHidden(data[i],true);
+	}
+	
+	return (result == kNoErr);
+}
 
 /*
  */
