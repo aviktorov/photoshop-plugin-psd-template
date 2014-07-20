@@ -25,126 +25,84 @@ static SPErr Execute(PIActionParameters *actionParams);
 
 /*
  */
-SPErr SetLayerHidden(const std::wstring& name,bool hidden) {
-	PIActionDescriptor action = NULL;
-	SPErr error = sPSActionDescriptor->Make(&action);
-	if(error) goto returnError;
-	
-	PIActionList layer_list = NULL;
-	error = sPSActionList->Make(&layer_list);
-	if(error) goto returnError;
-	
-	PIActionReference layer = NULL;
-	error = sPSActionReference->Make(&layer);
-	if(error) goto returnError;
-	
+SPErr PutNameWString(PIActionReference ref,DescriptorClassID class_id,const std::wstring& str) {
 	ASZString temp_str;
-	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&temp_str);
-	error = sPSActionReference->PutNameZString(layer,classLayer,temp_str);
-	if(error) goto returnError;
+	sASZString->MakeFromUnicode((ASUnicode*)&str[0],str.size(),&temp_str);
+	return sPSActionReference->PutNameZString(ref,class_id,temp_str);
+}
+
+/*
+ */
+SPErr PutWString(PIActionDescriptor desc,DescriptorKeyID key_id,const std::wstring& str) {
+	ASZString temp_str;
+	sASZString->MakeFromUnicode((ASUnicode*)&str[0],str.size(),&temp_str);
+	return sPSActionDescriptor->PutZString(desc,key_id,temp_str);
+}
+
+/*
+ */
+SPErr SetLayerHidden(const std::wstring& name,bool hidden) {
+	Auto_Ref layer_ref;
+	SPErr error = PutNameWString(layer_ref.get(),classLayer,name);
+	if(error) return error;
 	
-	error = sPSActionList->PutReference(layer_list,layer);
-	if(error) goto returnError;
+	Auto_List layer_list;
+	error = sPSActionList->PutReference(layer_list.get(),layer_ref.get());
+	if(error) return error;
 	
-	error = sPSActionDescriptor->PutList(action,keyNull,layer_list);
-	if(error) goto returnError;
+	Auto_Desc action;
+	error = sPSActionDescriptor->PutList(action.get(),keyNull,layer_list.get());
+	if(error) return error;
 	
-	PIActionDescriptor result = NULL;
-	error = sPSActionControl->Play(&result,(hidden) ? eventHide : eventShow,action,plugInDialogSilent);
-	if(error) goto returnError;
-	
-	returnError:
-	
-	if(result != NULL) sPSActionDescriptor->Free(result);
-	if(action != NULL) sPSActionDescriptor->Free(action);
-	if(layer_list != NULL) sPSActionList->Free(layer_list);
-	if(layer != NULL) sPSActionReference->Free(layer);
-	
-	return error;
+	Auto_Desc result(false);
+	return sPSActionControl->Play(&result,(hidden) ? eventHide : eventShow,action.get(),plugInDialogSilent);
 }
 
 SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
-	PIActionDescriptor result = NULL;
+	Auto_Ref layer_ref;
+	SPErr error = PutNameWString(layer_ref.get(),classTextLayer,name);
+	if(error) return error;
 	
-	PIActionDescriptor action = NULL;
-	SPErr error = sPSActionDescriptor->Make(&action);
-	if(error) goto returnError;
+	Auto_Desc layer_text;
+	error = PutWString(layer_text.get(),keyText,text);
+	if(error) return error;
 	
-	PIActionReference layer = NULL;
-	error = sPSActionReference->Make(&layer);
-	if(error) goto returnError;
+	Auto_Desc action;
+	error = sPSActionDescriptor->PutReference(action.get(),keyNull,layer_ref.get());
+	if(error) return error;
 	
-	ASZString temp_str;
-	sASZString->MakeFromUnicode((ASUnicode*)&name[0],name.size(),&temp_str);
-	error = sPSActionReference->PutNameZString(layer,classTextLayer,temp_str);
-	if(error) goto returnError;
+	error = sPSActionDescriptor->PutObject(action.get(),keyTo,classTextLayer,layer_text.get());
+	if(error) return error;
 	
-	error = sPSActionDescriptor->PutReference(action,keyNull,layer);
-	if(error) goto returnError;
-	
-	PIActionDescriptor layer_text = NULL;
-	error = sPSActionDescriptor->Make(&layer_text);
-	if(error) goto returnError;
-	
-	sASZString->MakeFromUnicode((ASUnicode*)&text[0],text.size(),&temp_str);
-	error = sPSActionDescriptor->PutZString(layer_text,keyText,temp_str);
-	if(error) goto returnError;
-	
-	error = sPSActionDescriptor->PutObject(action,keyTo,classTextLayer,layer_text);
-	if(error) goto returnError;
-	
-	error = sPSActionControl->Play(&result,eventSet,action,plugInDialogSilent);
-	if(error) goto returnError;
-	
-	returnError:
-	
-	if(result != NULL) sPSActionDescriptor->Free(result);
-	if(action != NULL) sPSActionDescriptor->Free(action);
-	if(layer != NULL) sPSActionReference->Free(layer);
-	if(layer_text != NULL) sPSActionDescriptor->Free(layer_text);
-	
-	return error;
+	Auto_Desc result(false);
+	return sPSActionControl->Play(&result,eventSet,action.get(),plugInDialogSilent);
 }
 
 /*
  */
 SPErr SavePSD(const char* name) {
-	PIActionDescriptor action = NULL;
-	SPErr error = sPSActionDescriptor->Make(&action);
-	if(error) goto returnError;
-	
-	PIActionDescriptor compatibility = NULL;
-	error = sPSActionDescriptor->Make(&compatibility);
-	if(error) goto returnError;
-	
 	DescriptorTypeID compatibility_key;
-	error = sPSActionControl->StringIDToTypeID("maximizeCompatibility",&compatibility_key);
-	if(error) goto returnError;
+	SPErr error = sPSActionControl->StringIDToTypeID("maximizeCompatibility",&compatibility_key);
+	if(error) return error;
 	
-	error = sPSActionDescriptor->PutBoolean(compatibility,compatibility_key,true);
-	if(error) goto returnError;
+	Auto_Desc compatibility;
+	error = sPSActionDescriptor->PutBoolean(compatibility.get(),compatibility_key,true);
+	if(error) return error;
 	
-	error = sPSActionDescriptor->PutObject(action,keyAs,classPhotoshop35Format,compatibility);
-	if(error) goto returnError;
+	Auto_Desc action;
+	error = sPSActionDescriptor->PutObject(action.get(),keyAs,classPhotoshop35Format,compatibility.get());
+	if(error) return error;
 	
 	Handle path = NULL;
 	FullPathToAlias(name,path);
 	
-	error = sPSActionDescriptor->PutAlias(action,keyIn,path);
-	if(error) goto returnError;
+	error = sPSActionDescriptor->PutAlias(action.get(),keyIn,path);
+	if(path) sPSHandle->Dispose(path);
 	
-	PIActionDescriptor result = NULL;
-	error = sPSActionControl->Play(&result,eventSave,action,plugInDialogSilent);
-	if(error) goto returnError;
+	if(error) return error;
 	
-	returnError:
-	
-	if(compatibility != NULL) sPSActionDescriptor->Free(compatibility);
-	if(result != NULL) sPSActionDescriptor->Free(result);
-	if(action != NULL) sPSActionDescriptor->Free(action);
-	if(path != NULL) sPSHandle->Dispose(path);
-	
-	return error;
+	Auto_Desc result(false);
+	return sPSActionControl->Play(&result,eventSave,action.get(),plugInDialogSilent);
 }
 
 /*
