@@ -55,7 +55,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    else if (cb1) \
      cb1(p->entry_buf, entry_pos, data); \
    pstate = FIELD_NOT_BEGUN; \
-   entry_pos = quoted = spaces = 0; \
+   entry_pos = spaces = 0; \
+   quoted = 0; \
  } while (0)
 
 #define SUBMIT_ROW(p, c) \
@@ -63,7 +64,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     if (cb2) \
       cb2(c, data); \
     pstate = ROW_NOT_BEGUN; \
-    entry_pos = quoted = spaces = 0; \
+    entry_pos = spaces = 0; \
+    quoted = 0; \
   } while (0)
 
 #define SUBMIT_CHAR(p, c) ((p)->entry_buf[entry_pos++] = (c))
@@ -189,7 +191,8 @@ csv_fini(struct csv_parser *p, void (*cb1)(void *, size_t, void *), void (*cb2)(
   }
 
   /* Reset parser */
-  p->spaces = p->quoted = p->entry_pos = p->status = 0;
+  p->quoted = p->status = 0;
+  p->spaces = p->entry_pos = 0;
   p->pstate = ROW_NOT_BEGUN;
 
   return 0;
@@ -296,7 +299,7 @@ csv_increase_buffer(struct csv_parser *p)
   }
 
   /* Update entry buffer pointer and entry_size if successful */
-  p->entry_buf = vp;
+  p->entry_buf = (unsigned char*)vp;
   p->entry_size += to_add;
   return 0;
 }
@@ -304,9 +307,9 @@ csv_increase_buffer(struct csv_parser *p)
 size_t
 csv_parse(struct csv_parser *p, const void *s, size_t len, void (*cb1)(void *, size_t, void *), void (*cb2)(int c, void *), void *data)
 {
-  unsigned const char *us = s;  /* Access input data as array of unsigned char */
-  unsigned char c;              /* The character we are currently processing */
-  size_t pos = 0;               /* The number of characters we have processed in this call */
+  unsigned const char *us = (unsigned char*)s;  /* Access input data as array of unsigned char */
+  unsigned char c;                              /* The character we are currently processing */
+  size_t pos = 0;                               /* The number of characters we have processed in this call */
 
   /* Store key fields into local variables for performance */
   unsigned char delim = p->delim_char;
@@ -451,8 +454,8 @@ csv_parse(struct csv_parser *p, const void *s, size_t len, void (*cb1)(void *, s
 size_t
 csv_write (void *dest, size_t dest_size, const void *src, size_t src_size)
 {
-  unsigned char *cdest = dest;
-  const unsigned char *csrc = src;
+  unsigned char *cdest = (unsigned char*)dest;
+  const unsigned char *csrc = (const unsigned char*)src;
   size_t chars = 0;
 
   if (src == NULL)
@@ -488,7 +491,7 @@ csv_write (void *dest, size_t dest_size, const void *src, size_t src_size)
 int
 csv_fwrite (FILE *fp, const void *src, size_t src_size)
 {
-  const unsigned char *csrc = src;
+  const unsigned char *csrc = (const unsigned char*)src;
 
   if (fp == NULL || src == NULL)
     return 0;
@@ -517,8 +520,8 @@ csv_fwrite (FILE *fp, const void *src, size_t src_size)
 size_t
 csv_write2 (void *dest, size_t dest_size, const void *src, size_t src_size, unsigned char quote)
 {
-  unsigned char *cdest = dest;
-  const unsigned char *csrc = src;
+  unsigned char *cdest = (unsigned char*)dest;
+  const unsigned char *csrc = (const unsigned char*)src;
   size_t chars = 0;
 
   if (src == NULL)
@@ -554,7 +557,7 @@ csv_write2 (void *dest, size_t dest_size, const void *src, size_t src_size, unsi
 int
 csv_fwrite2 (FILE *fp, const void *src, size_t src_size, unsigned char quote)
 {
-  const unsigned char *csrc = src;
+  const unsigned char *csrc = (const unsigned char*)src;
 
   if (fp == NULL || src == NULL)
     return 0;
