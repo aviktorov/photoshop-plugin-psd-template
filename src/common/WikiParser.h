@@ -29,12 +29,12 @@ class WikiParser {
 		}
 		
 		inline size_t getItalicStart(size_t num) const {
-			assert(num >= 0 && num < bold_tokens.size() && "WikiParser::getItalicStart(): bad index");
+			assert(num >= 0 && num < italic_tokens.size() && "WikiParser::getItalicStart(): bad index");
 			return italic_tokens[num].first;
 		}
 		
 		inline size_t getItalicEnd(size_t num) const {
-			assert(num >= 0 && num < bold_tokens.size() && "WikiParser::getItalicEnd(): bad index");
+			assert(num >= 0 && num < italic_tokens.size() && "WikiParser::getItalicEnd(): bad index");
 			return italic_tokens[num].second;
 		}
 		
