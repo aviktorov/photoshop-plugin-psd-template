@@ -10,6 +10,8 @@
 #include "TemplateAutomation.h"
 #include "TemplateAutomationUI.h"
 
+#include "WikiParser.h"
+
 /*
  */
 SPBasicSuite *sSPBasic = NULL;
@@ -59,13 +61,65 @@ SPErr SetLayerHidden(const std::wstring& name,bool hidden) {
 }
 
 SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
+	WikiParser parser;
+	parser.parse(text);
+	
 	Auto_Ref layer_ref;
 	SPErr error = PutNameWString(layer_ref.get(),classTextLayer,name);
 	if(error) return error;
 	
 	Auto_Desc layer_text;
-	error = PutWString(layer_text.get(),keyText,text);
+	error = PutWString(layer_text.get(),keyText,parser.getProcessedString());
 	if(error) return error;
+	
+	Auto_List text_style_list;
+	for(size_t i = 0; i < parser.getNumBoldTokens(); ++i) {
+		Auto_Desc text_range;
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getBoldStart(i));
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getBoldStart(i));
+		if(error) return error;
+		
+		Auto_Desc text_style;
+		
+		DescriptorKeyID keyBold = 0;
+		error = sPSActionControl->StringIDToTypeID("syntheticBold",&keyBold);
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,true);
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
+		if(error) return error;
+		
+		error = sPSActionList->PutObject(text_style_list.get(),classTextStyleRange,text_range.get());
+		if(error) return error;
+	}
+	
+	for(size_t i = 0; i < parser.getNumItalicTokens(); ++i) {
+		Auto_Desc text_range;
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getItalicStart(i));
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getItalicStart(i));
+		if(error) return error;
+		
+		Auto_Desc text_style;
+		
+		DescriptorKeyID keyItalic = 0;
+		error = sPSActionControl->StringIDToTypeID("synthetictalic",&keyItalic);
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,true);
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
+		if(error) return error;
+		
+		error = sPSActionList->PutObject(text_style_list.get(),classTextStyleRange,text_range.get());
+		if(error) return error;
+	}
 	
 	Auto_Desc action;
 	error = sPSActionDescriptor->PutReference(action.get(),keyNull,layer_ref.get());
