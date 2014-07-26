@@ -69,7 +69,7 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	if(error) return error;
 	
 	DescriptorKeyID keyItalic = 0;
-	error = sPSActionControl->StringIDToTypeID("synthetictalic",&keyItalic);
+	error = sPSActionControl->StringIDToTypeID("syntheticItalic",&keyItalic);
 	if(error) return error;
 	
 	Auto_Ref layer_ref;
