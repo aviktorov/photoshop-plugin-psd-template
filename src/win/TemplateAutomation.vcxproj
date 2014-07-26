@@ -302,6 +302,7 @@
     <ClInclude Include="..\common\TemplateAutomation.h" />
     <ClInclude Include="..\common\TemplateAutomationTerminology.h" />
     <ClInclude Include="..\common\TemplateAutomationUI.h" />
+    <ClInclude Include="..\common\WikiParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TemplateAutomation.rc">
@@ -328,6 +329,7 @@
     <ClCompile Include="..\common\CSVData.cpp" />
     <ClCompile Include="..\common\TemplateAutomation.cpp" />
     <ClCompile Include="..\common\TemplateAutomationUI.cpp" />
+    <ClCompile Include="..\common\WikiParser.cpp" />
     <ClCompile Include="TemplateAutomationWin.cpp" />
   </ItemGroup>
   <ItemGroup>

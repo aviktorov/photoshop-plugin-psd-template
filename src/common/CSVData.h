@@ -9,7 +9,6 @@ typedef std::vector<std::wstring> csv_row;
 class CSVData {
 	public:
 		
-		
 		int load(const std::string& name);
 		
 		inline void addItem(const std::wstring& item) { current_row.push_back(item); }
