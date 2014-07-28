@@ -86,7 +86,11 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 		if(error) return error;
 		
 		Auto_Desc text_style;
+		
 		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,true);
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,false);
 		if(error) return error;
 		
 		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
@@ -105,6 +109,10 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 		if(error) return error;
 		
 		Auto_Desc text_style;
+		
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,false);
+		if(error) return error;
+		
 		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,true);
 		if(error) return error;
 		
