@@ -299,9 +299,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\common\CSVData.h" />
+    <ClInclude Include="..\common\LayerInfo.h" />
     <ClInclude Include="..\common\TemplateAutomation.h" />
     <ClInclude Include="..\common\TemplateAutomationTerminology.h" />
     <ClInclude Include="..\common\TemplateAutomationUI.h" />
+    <ClInclude Include="..\common\Utils.h" />
     <ClInclude Include="..\common\WikiParser.h" />
   </ItemGroup>
   <ItemGroup>
@@ -327,8 +329,10 @@
     <ClCompile Include="..\..\external\common\sources\PIWinUI.cpp" />
     <ClCompile Include="..\..\external\csv-parser\libcsv.c" />
     <ClCompile Include="..\common\CSVData.cpp" />
+    <ClCompile Include="..\common\LayerInfo.cpp" />
     <ClCompile Include="..\common\TemplateAutomation.cpp" />
     <ClCompile Include="..\common\TemplateAutomationUI.cpp" />
+    <ClCompile Include="..\common\Utils.cpp" />
     <ClCompile Include="..\common\WikiParser.cpp" />
     <ClCompile Include="TemplateAutomationWin.cpp" />
   </ItemGroup>

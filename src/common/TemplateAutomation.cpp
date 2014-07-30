@@ -10,6 +10,7 @@
 #include "TemplateAutomation.h"
 #include "TemplateAutomationUI.h"
 
+#include "Utils.h"
 #include "WikiParser.h"
 
 /*
@@ -27,25 +28,9 @@ static SPErr Execute(PIActionParameters *actionParams);
 
 /*
  */
-SPErr PutNameWString(PIActionReference ref,DescriptorClassID class_id,const std::wstring& str) {
-	ASZString temp_str;
-	sASZString->MakeFromUnicode((ASUnicode*)&str[0],str.size(),&temp_str);
-	return sPSActionReference->PutNameZString(ref,class_id,temp_str);
-}
-
-/*
- */
-SPErr PutWString(PIActionDescriptor desc,DescriptorKeyID key_id,const std::wstring& str) {
-	ASZString temp_str;
-	sASZString->MakeFromUnicode((ASUnicode*)&str[0],str.size(),&temp_str);
-	return sPSActionDescriptor->PutZString(desc,key_id,temp_str);
-}
-
-/*
- */
 SPErr SetLayerHidden(const std::wstring& name,bool hidden) {
 	Auto_Ref layer_ref;
-	SPErr error = PutNameWString(layer_ref.get(),classLayer,name);
+	SPErr error = Utils::PutNameWString(layer_ref.get(),classLayer,name);
 	if(error) return error;
 	
 	Auto_List layer_list;
@@ -64,16 +49,8 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	WikiParser parser;
 	parser.parse(text);
 	
-	DescriptorKeyID keyBold = 0;
-	SPErr error = sPSActionControl->StringIDToTypeID("syntheticBold",&keyBold);
-	if(error) return error;
-	
-	DescriptorKeyID keyItalic = 0;
-	error = sPSActionControl->StringIDToTypeID("syntheticItalic",&keyItalic);
-	if(error) return error;
-	
 	Auto_Ref layer_ref;
-	error = PutNameWString(layer_ref.get(),classTextLayer,name);
+	SPErr error = Utils::PutNameWString(layer_ref.get(),classTextLayer,name);
 	if(error) return error;
 	
 	Auto_List text_style_list;
@@ -124,7 +101,7 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	}
 	
 	Auto_Desc layer_text;
-	error = PutWString(layer_text.get(),keyText,parser.getProcessedString());
+	error = Utils::PutWString(layer_text.get(),keyText,parser.getProcessedString());
 	if(error) return error;
 	
 	if(parser.getNumBoldTokens() || parser.getNumItalicTokens()) {
@@ -146,12 +123,8 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 /*
  */
 SPErr SavePSD(const char* name) {
-	DescriptorTypeID compatibility_key;
-	SPErr error = sPSActionControl->StringIDToTypeID("maximizeCompatibility",&compatibility_key);
-	if(error) return error;
-	
 	Auto_Desc compatibility;
-	error = sPSActionDescriptor->PutBoolean(compatibility.get(),compatibility_key,true);
+	SPErr error = sPSActionDescriptor->PutBoolean(compatibility.get(),keyMaximizeCompatibility,true);
 	if(error) return error;
 	
 	Auto_Desc action;
@@ -224,17 +197,14 @@ DLLExport SPAPI SPErr AutoPluginMain(const char* caller,const char* selector,voi
 /*
  */
 static void Initialize() {
-	// TODO: initialize here
+	Utils::Init();
 }
 
 static SPErr Startup() {
-	// TODO: startup here
-	
 	return kSPNoError;
 }
 
 static SPErr Shutdown() {
-	// TODO: shutdown here
 	PIUSuitesRelease();
 	
 	return kSPNoError;
