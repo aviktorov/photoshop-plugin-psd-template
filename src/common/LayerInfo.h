@@ -6,8 +6,8 @@
 class LayerInfo {
 	public:
 		
-		bool load(const std::wstring &name);
-		void save(PIActionDescriptor &data) const;
+		SPErr load(const std::wstring &name);
+		SPErr save(PIActionDescriptor &data) const;
 		
 	private:
 		
@@ -17,12 +17,13 @@ class LayerInfo {
 			float font_size;
 			int horizontal_scale;
 			int vertical_scale;
+			int tracking;
 		};
 		
 		struct ParagraphStyle {
-			float first_line_indent;
 			float start_indent;
 			float end_indent;
+			float first_line_indent;
 			float space_before;
 			float space_after;
 			bool hyphenate;

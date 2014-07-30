@@ -7,7 +7,9 @@
  */
 extern DescriptorKeyID keyBold;
 extern DescriptorKeyID keyItalic;
-extern DescriptorTypeID keyMaximizeCompatibility;
+extern DescriptorKeyID keyMaximizeCompatibility;
+extern DescriptorKeyID keyParagraphStyle;
+extern DescriptorKeyID keyParagraphStyleRange;
 
 /*
  */

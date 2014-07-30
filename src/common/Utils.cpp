@@ -4,7 +4,10 @@
  */
 DescriptorKeyID keyBold = 0;
 DescriptorKeyID keyItalic = 0;
-DescriptorTypeID keyMaximizeCompatibility = 0;
+DescriptorKeyID keyMaximizeCompatibility = 0;
+DescriptorKeyID keyParagraphStyle = 0;
+DescriptorKeyID keyParagraphStyleRange = 0;
+
 
 /*
  */
@@ -16,6 +19,12 @@ SPErr Utils::Init() {
 	if(error) return error;
 	
 	error = sPSActionControl->StringIDToTypeID("maximizeCompatibility",&keyMaximizeCompatibility);
+	if(error) return error;
+	
+	error = sPSActionControl->StringIDToTypeID("paragraphStyle",&keyParagraphStyle);
+	if(error) return error;
+	
+	error = sPSActionControl->StringIDToTypeID("paragraphStyleRange",&keyParagraphStyleRange);
 	if(error) return error;
 	
 	return error;
