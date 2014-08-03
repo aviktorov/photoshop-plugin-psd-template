@@ -85,12 +85,38 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 		if(error) return error;
 	}
 	
+	Auto_List paragraph_style_list;
+	for(size_t i = 0; i < parser.getNumParagraphs(); ++i) {
+		Auto_Desc paragraph_range;
+		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyFrom,parser.getParagraphStart(i));
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyTo,parser.getParagraphEnd(i));
+		if(error) return error;
+		
+		Auto_Desc paragraph_style;
+		
+		error = info.saveParagraphStyle(paragraph_style.get());
+		if(error) return error;
+		
+		error = sPSActionDescriptor->PutObject(paragraph_range.get(),keyParagraphStyle,keyParagraphStyle,paragraph_style.get());
+		if(error) return error;
+		
+		error = sPSActionList->PutObject(paragraph_style_list.get(),keyParagraphStyleRange,paragraph_range.get());
+		if(error) return error;
+	}
+	
 	Auto_Desc layer_text;
 	error = Utils::PutWString(layer_text.get(),keyText,parser.getProcessedString());
 	if(error) return error;
 	
 	if(parser.getNumTokens()) {
 		error = sPSActionDescriptor->PutList(layer_text.get(),keyTextStyleRange,text_style_list.get());
+		if(error) return error;
+	}
+	
+	if(parser.getNumParagraphs()) {
+		error = sPSActionDescriptor->PutList(layer_text.get(),keyParagraphStyleRange,paragraph_style_list.get());
 		if(error) return error;
 	}
 	

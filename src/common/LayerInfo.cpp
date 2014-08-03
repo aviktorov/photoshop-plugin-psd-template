@@ -117,6 +117,14 @@ SPErr LayerInfo::load(const std::wstring &name) {
 	}
 	
 	// paragraph style
+	if(Utils::HasKey(paragraph.get(),keyAlignment)) {
+		DescriptorEnumTypeID alignment_id;
+		error = sPSActionDescriptor->GetEnumerated(paragraph.get(),keyAlignment,&alignment_id,&paragraph_style.alignment);
+		if(error) return error;
+		
+		if(alignment_id != typeAlignment) return kBadParameterErr;
+	}
+	
 	if(Utils::HasKey(paragraph.get(),keyFirstLineIndent)) {
 		error = sPSActionDescriptor->GetUnitFloat(paragraph.get(),keyFirstLineIndent,&paragraph_style.first_line_indent_units,&paragraph_style.first_line_indent);
 		if(error) return error;
@@ -193,6 +201,9 @@ SPErr LayerInfo::saveParagraphStyle(PIActionDescriptor data) const {
 	if(error) return error;
 	
 	error = sPSActionDescriptor->PutBoolean(data,keyHyphenate,paragraph_style.hyphenate);
+	if(error) return error;
+	
+	error = sPSActionDescriptor->PutEnumerated(data,keyAlignment,typeAlignment,paragraph_style.alignment);
 	if(error) return error;
 	
 	return error;

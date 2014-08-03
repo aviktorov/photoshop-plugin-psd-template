@@ -19,11 +19,6 @@ void item_callback(void* s,size_t i,void* data) {
 		std::wstring wcontent = L"implement me";
 	#endif
 	
-	for(size_t i = 0; i < wcontent.size(); ++i) {
-		int is_cr = i > 0 && wcontent[i - 1] == L'\r';
-		if(wcontent[i] == L'\n' && is_cr == 0) wcontent.insert(i++,1,L'\r');
-	}
-	
 	csv_data->addItem(wcontent);
 }
 

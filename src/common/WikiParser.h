@@ -37,6 +37,18 @@ class WikiParser {
 			return tokens[num].italic;
 		}
 		
+		inline size_t getNumParagraphs() const { return paragraphs.size(); }
+		
+		inline size_t getParagraphStart(size_t num) const {
+			assert(num >= 0 && num < paragraphs.size() && "WikiParser::getParagraphStart(): bad index");
+			return paragraphs[num].start;
+		}
+		
+		inline size_t getParagraphEnd(size_t num) const {
+			assert(num >= 0 && num < paragraphs.size() && "WikiParser::getParagraphEnd(): bad index");
+			return paragraphs[num].end;
+		}
+		
 	private:
 		
 		struct Token {
@@ -46,8 +58,14 @@ class WikiParser {
 			bool italic;
 		};
 		
+		struct Paragraph {
+			size_t start;
+			size_t end;
+		};
+		
 		std::wstring processed_string;
 		std::vector<Token> tokens;
+		std::vector<Paragraph> paragraphs;
 };
 
 #endif // __WIKI_PARSER_H__

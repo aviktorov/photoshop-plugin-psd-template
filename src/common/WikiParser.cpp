@@ -17,6 +17,9 @@ void WikiParser::parse(const std::wstring &data) {
 	current_token.bold = false;
 	current_token.italic = false;
 	
+	Paragraph current_paragraph;
+	current_paragraph.start = 0;
+	
 	for(size_t i = 0; i < data.size(); ++i) {
 		int token_type = TOKEN_CHAR;
 		
@@ -33,6 +36,13 @@ void WikiParser::parse(const std::wstring &data) {
 			case TOKEN_CHAR: {
 				if(i < data.size()) {
 					processed_string.push_back(data[i]);
+					
+					if(data[i] == L'\n') {
+						current_paragraph.end = processed_string.size();
+						if(current_paragraph.start != current_paragraph.end) paragraphs.push_back(current_paragraph);
+						
+						processed_string.push_back(L'\r');
+					}
 				}
 			} break;
 			
@@ -52,4 +62,7 @@ void WikiParser::parse(const std::wstring &data) {
 	
 	current_token.end = processed_string.size();
 	if(current_token.start != current_token.end) tokens.push_back(current_token);
+	
+	current_paragraph.end = processed_string.size();
+	if(current_paragraph.start != current_paragraph.end) paragraphs.push_back(current_paragraph);
 }

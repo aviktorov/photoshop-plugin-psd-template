@@ -33,6 +33,7 @@ class LayerInfo {
 			DescriptorUnitID first_line_indent_units;
 			DescriptorUnitID space_before_units;
 			DescriptorUnitID space_after_units;
+			DescriptorEnumID alignment;
 			real64 start_indent;
 			real64 end_indent;
 			real64 first_line_indent;
