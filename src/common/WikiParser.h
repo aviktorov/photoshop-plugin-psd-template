@@ -15,36 +15,39 @@ class WikiParser {
 		
 		inline const std::wstring &getProcessedString() const { return processed_string; }
 		
-		inline size_t getNumBoldTokens() const { return bold_tokens.size(); }
-		inline size_t getNumItalicTokens() const { return italic_tokens.size(); }
+		inline size_t getNumTokens() const { return tokens.size(); }
 		
-		inline size_t getBoldStart(size_t num) const {
-			assert(num >= 0 && num < bold_tokens.size() && "WikiParser::getBoldStart(): bad index");
-			return bold_tokens[num].first;
+		inline size_t getTokenStart(size_t num) const {
+			assert(num >= 0 && num < tokens.size() && "WikiParser::getTokenStart(): bad index");
+			return tokens[num].start;
 		}
 		
-		inline size_t getBoldEnd(size_t num) const {
-			assert(num >= 0 && num < bold_tokens.size() && "WikiParser::getBoldEnd(): bad index");
-			return bold_tokens[num].second;
+		inline size_t getTokenEnd(size_t num) const {
+			assert(num >= 0 && num < tokens.size() && "WikiParser::getTokenEnd(): bad index");
+			return tokens[num].end;
 		}
 		
-		inline size_t getItalicStart(size_t num) const {
-			assert(num >= 0 && num < italic_tokens.size() && "WikiParser::getItalicStart(): bad index");
-			return italic_tokens[num].first;
+		inline bool getTokenBold(size_t num) const {
+			assert(num >= 0 && num < tokens.size() && "WikiParser::getTokenBold(): bad index");
+			return tokens[num].bold;
 		}
 		
-		inline size_t getItalicEnd(size_t num) const {
-			assert(num >= 0 && num < italic_tokens.size() && "WikiParser::getItalicEnd(): bad index");
-			return italic_tokens[num].second;
+		inline bool getTokenItalic(size_t num) const {
+			assert(num >= 0 && num < tokens.size() && "WikiParser::getTokenItalic(): bad index");
+			return tokens[num].italic;
 		}
 		
 	private:
 		
-		typedef std::pair<size_t,size_t> range;
+		struct Token {
+			size_t start;
+			size_t end;
+			bool bold;
+			bool italic;
+		};
 		
 		std::wstring processed_string;
-		std::vector<range> bold_tokens;
-		std::vector<range> italic_tokens;
+		std::vector<Token> tokens;
 };
 
 #endif // __WIKI_PARSER_H__

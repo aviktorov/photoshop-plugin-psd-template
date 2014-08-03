@@ -59,46 +59,20 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	if(error) return error;
 	
 	Auto_List text_style_list;
-	for(size_t i = 0; i < parser.getNumBoldTokens(); ++i) {
+	for(size_t i = 0; i < parser.getNumTokens(); ++i) {
 		Auto_Desc text_range;
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getBoldStart(i));
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getTokenStart(i));
 		if(error) return error;
 		
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getBoldEnd(i));
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getTokenEnd(i));
 		if(error) return error;
 		
 		Auto_Desc text_style;
 		
-		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,true);
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,parser.getTokenBold(i));
 		if(error) return error;
 		
-		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,false);
-		if(error) return error;
-		
-		error = info.saveTextStyle(text_style.get());
-		if(error) return error;
-		
-		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
-		if(error) return error;
-		
-		error = sPSActionList->PutObject(text_style_list.get(),classTextStyleRange,text_range.get());
-		if(error) return error;
-	}
-	
-	for(size_t i = 0; i < parser.getNumItalicTokens(); ++i) {
-		Auto_Desc text_range;
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getItalicStart(i));
-		if(error) return error;
-		
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getItalicEnd(i));
-		if(error) return error;
-		
-		Auto_Desc text_style;
-		
-		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyBold,false);
-		if(error) return error;
-		
-		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,true);
+		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,parser.getTokenItalic(i));
 		if(error) return error;
 		
 		error = info.saveTextStyle(text_style.get());
@@ -115,7 +89,7 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	error = Utils::PutWString(layer_text.get(),keyText,parser.getProcessedString());
 	if(error) return error;
 	
-	if(parser.getNumBoldTokens() || parser.getNumItalicTokens()) {
+	if(parser.getNumTokens()) {
 		error = sPSActionDescriptor->PutList(layer_text.get(),keyTextStyleRange,text_style_list.get());
 		if(error) return error;
 	}
