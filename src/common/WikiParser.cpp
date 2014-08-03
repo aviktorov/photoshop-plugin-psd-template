@@ -35,7 +35,7 @@ void WikiParser::parse(const std::wstring &data) {
 			
 			case TOKEN_BOLD: {
 				if(bold_opened) {
-					bold_tokens[bold_tokens.size() - 1].second = processed_string.size() - 1;
+					bold_tokens[bold_tokens.size() - 1].second = processed_string.size();
 				}
 				else {
 					bold_tokens.push_back(range());
@@ -46,7 +46,7 @@ void WikiParser::parse(const std::wstring &data) {
 			
 			case TOKEN_ITALIC: {
 				if(italic_opened) {
-					italic_tokens[italic_tokens.size() - 1].second = processed_string.size() - 1;
+					italic_tokens[italic_tokens.size() - 1].second = processed_string.size();
 				}
 				else {
 					italic_tokens.push_back(range());

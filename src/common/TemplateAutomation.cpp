@@ -12,6 +12,7 @@
 
 #include "Utils.h"
 #include "WikiParser.h"
+#include "LayerInfo.h"
 
 /*
  */
@@ -49,8 +50,12 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	WikiParser parser;
 	parser.parse(text);
 	
+	LayerInfo info;
+	SPErr error = info.load(name);
+	if(error) return error;
+	
 	Auto_Ref layer_ref;
-	SPErr error = Utils::PutNameWString(layer_ref.get(),classTextLayer,name);
+	error = Utils::PutNameWString(layer_ref.get(),classTextLayer,name);
 	if(error) return error;
 	
 	Auto_List text_style_list;
@@ -68,6 +73,9 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 		if(error) return error;
 		
 		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,false);
+		if(error) return error;
+		
+		error = info.saveTextStyle(text_style.get());
 		if(error) return error;
 		
 		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
@@ -91,6 +99,9 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 		if(error) return error;
 		
 		error = sPSActionDescriptor->PutBoolean(text_style.get(),keyItalic,true);
+		if(error) return error;
+		
+		error = info.saveTextStyle(text_style.get());
 		if(error) return error;
 		
 		error = sPSActionDescriptor->PutObject(text_range.get(),keyTextStyle,classTextStyle,text_style.get());
