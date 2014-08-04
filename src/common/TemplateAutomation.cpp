@@ -61,10 +61,10 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	Auto_List text_style_list;
 	for(size_t i = 0; i < parser.getNumTokens(); ++i) {
 		Auto_Desc text_range;
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,parser.getTokenStart(i));
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyFrom,static_cast<int32>(parser.getTokenStart(i)));
 		if(error) return error;
 		
-		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,parser.getTokenEnd(i));
+		error = sPSActionDescriptor->PutInteger(text_range.get(),keyTo,static_cast<int32>(parser.getTokenEnd(i)));
 		if(error) return error;
 		
 		Auto_Desc text_style;
@@ -88,10 +88,10 @@ SPErr SetLayerText(const std::wstring& name,const std::wstring& text) {
 	Auto_List paragraph_style_list;
 	for(size_t i = 0; i < parser.getNumParagraphs(); ++i) {
 		Auto_Desc paragraph_range;
-		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyFrom,parser.getParagraphStart(i));
+		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyFrom,static_cast<int32>(parser.getParagraphStart(i)));
 		if(error) return error;
 		
-		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyTo,parser.getParagraphEnd(i));
+		error = sPSActionDescriptor->PutInteger(paragraph_range.get(),keyTo,static_cast<int32>(parser.getParagraphEnd(i)));
 		if(error) return error;
 		
 		Auto_Desc paragraph_style;
