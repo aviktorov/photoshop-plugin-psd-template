@@ -8,14 +8,17 @@ enum {
 	kDOk_button = 1,
 	kDCancel_button = 2,
 	kDCSV_edit = 6,
-	kDChoose_button = 7,
-	kDTemplate_edit = 8,
+	kDCSV_choose_button = 7,
+	kDSaveDir_edit = 8,
+	kDSaveDir_choose_button = 9,
+	kDSaveName_edit = 11,
 };
 
 SPErr DoUI();
 SPErr DoUIInit(PIDialogPtr handle);
 
 extern PIText csv_text;
-extern PIText template_text;
+extern PIText save_dir_text;
+extern PIText save_name_text;
 
 #endif // __TEMPLATE_AUTOMATION_UI_H__

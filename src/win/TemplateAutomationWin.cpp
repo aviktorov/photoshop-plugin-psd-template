@@ -4,6 +4,8 @@
 #include "TemplateAutomationUI.h"
 #include "CSVData.h"
 
+#include <ShlObj.h>
+
 DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,LPARAM lParam);
 
 SPErr DoUI() {
@@ -43,11 +45,19 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 							return TRUE;
 						}
 						
-						std::string template_name;
-						template_text.GetText(template_name);
+						std::string save_dir;
+						save_dir_text.GetText(save_dir);
 						
-						if(template_name.empty()) {
-							MessageBox(hDlg,"Template name is empty","Error",MB_OK);
+						if(save_dir.empty()) {
+							MessageBox(hDlg,"Save dir is empty","Error",MB_OK);
+							return TRUE;
+						}
+						
+						std::string save_name;
+						save_name_text.GetText(save_name);
+						
+						if(save_name.empty()) {
+							MessageBox(hDlg,"Save name is empty","Error",MB_OK);
 							return TRUE;
 						}
 						
@@ -66,7 +76,7 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						
 						for(size_t i = 1; i < csv_data.getNumRows(); ++i) {
 							std::ostringstream psd_stream;
-							psd_stream << template_name.c_str() << "_" << i << ".psd";
+							psd_stream << save_dir.c_str() << '\\' << save_name.c_str() << "_" << i << ".psd";
 							
 							std::string psd_name = psd_stream.str();
 							const csv_row& data = csv_data.getRow(i);
@@ -80,8 +90,8 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						return TRUE;
 					} break;
 					
-					case kDChoose_button: {
-						char file[1024] = "";
+					case kDCSV_choose_button: {
+						char file[MAX_PATH] = "";
 						
 						OPENFILENAME dialog_settings;
 						ZeroMemory(&dialog_settings, sizeof(dialog_settings));
@@ -99,6 +109,31 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 						
 						if(GetOpenFileName(&dialog_settings) == TRUE) {
 							csv_text.SetText(dialog_settings.lpstrFile);
+						}
+						
+						return TRUE;
+					} break;
+					
+					case kDSaveDir_choose_button: {
+						BROWSEINFO dialog_settings;
+						ZeroMemory(&dialog_settings, sizeof(dialog_settings));
+						
+						dialog_settings.hwndOwner = hDlg;
+						dialog_settings.lpszTitle = "Pick a Directory";
+						dialog_settings.ulFlags = BIF_NEWDIALOGSTYLE;
+						
+						LPITEMIDLIST pidl = SHBrowseForFolder(&dialog_settings);
+						if(pidl != 0) {
+							char path[MAX_PATH];
+							if(SHGetPathFromIDList(pidl,path)) {
+								save_dir_text.SetText(path);
+							}
+							
+							IMalloc* imalloc = 0;
+							if(SUCCEEDED(SHGetMalloc(&imalloc))) {
+								imalloc->Free(pidl);
+								imalloc->Release();
+							}
 						}
 						
 						return TRUE;
