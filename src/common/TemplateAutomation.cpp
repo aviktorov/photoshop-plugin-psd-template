@@ -154,9 +154,51 @@ SPErr SavePSD(const char* name) {
 	return sPSActionControl->Play(&result,eventSave,action.get(),plugInDialogSilent);
 }
 
+SPErr OpenPSD(const char* name) {
+	Auto_Desc action;
+	
+	Handle path = NULL;
+	FullPathToAlias(name,path);
+	
+	SPErr error = sPSActionDescriptor->PutAlias(action.get(),keyNull,path);
+	if(path) sPSHandle->Dispose(path);
+	
+	if(error) return error;
+	
+	Auto_Desc result(false);
+	return sPSActionControl->Play(&result,eventOpen,action.get(),plugInDialogSilent);
+}
+
+SPErr ClosePSD() {
+	Auto_Desc result(false);
+	return sPSActionControl->Play(&result,eventClose,NULL,plugInDialogSilent);
+}
+
+/*
+ */
+SPErr GetPSDName(std::string& result) {
+	Handle file_ref = NULL;
+	
+	SPErr error = PIUGetInfo(classDocument,keyFileReference,&file_ref,NULL);
+	if(error) return error;
+	
+	char buffer[1024];
+	int32 length = 1024;
+	
+	AliasToFullPath(file_ref,buffer,length);
+	if(file_ref) sPSHandle->Dispose(file_ref);
+	
+	result = std::string(buffer);
+	return kSPNoError;
+}
+
 /*
  */
 int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) {
+	std::string template_name = "";
+	SPErr error = GetPSDName(template_name);
+	if(error) return error;
+	
 	for(size_t i = 0; i < data.size(); ++i) {
 		SetLayerHidden(data[i],false);
 	}
@@ -165,13 +207,13 @@ int MakePSDTemplate(const char* name,const csv_row& header,const csv_row& data) 
 		SetLayerText(header[i],data[i]);
 	}
 	
-	SPErr result = SavePSD(name);
+	error = SavePSD(name);
+	if(error) return error;
 	
-	for(size_t i = 0; i < data.size(); ++i) {
-		SetLayerHidden(data[i],true);
-	}
+	ClosePSD();
 	
-	return (result == kNoErr);
+	error = OpenPSD(template_name.c_str());
+	return error;
 }
 
 /*
