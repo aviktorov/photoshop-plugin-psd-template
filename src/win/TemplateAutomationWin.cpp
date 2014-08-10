@@ -23,10 +23,19 @@ SPErr DoUI() {
 }
 
 DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,LPARAM) {
+	static std::string csv_path = "";
+	static std::string save_dir = "";
+	static std::string save_name = "";
+	
 	switch(wMsg) {
 		case WM_INITDIALOG: {
 			CenterDialog(hDlg);
 			DoUIInit(hDlg);
+			
+			csv_text.SetText(csv_path);
+			save_dir_text.SetText(save_dir);
+			save_name_text.SetText(save_name);
+			
 			return TRUE;
 		}
 		
@@ -37,7 +46,6 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 			if(cmd == BN_CLICKED) {
 				switch(item) {
 					case kDOk_button: {
-						std::string csv_path;
 						csv_text.GetText(csv_path);
 						
 						if(csv_path.empty()) {
@@ -45,7 +53,6 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 							return TRUE;
 						}
 						
-						std::string save_dir;
 						save_dir_text.GetText(save_dir);
 						
 						if(save_dir.empty()) {
@@ -53,7 +60,6 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 							return TRUE;
 						}
 						
-						std::string save_name;
 						save_name_text.GetText(save_name);
 						
 						if(save_name.empty()) {
@@ -86,6 +92,10 @@ DLLExport BOOL WINAPI TemplateAutomationProc(HWND hDlg,UINT wMsg,WPARAM wParam,L
 					}
 					
 					case kDCancel_button: {
+						csv_text.GetText(csv_path);
+						save_dir_text.GetText(save_dir);
+						save_name_text.GetText(save_name);
+						
 						EndDialog(hDlg, item);
 						return TRUE;
 					} break;
